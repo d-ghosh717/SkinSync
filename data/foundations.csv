@@ -1,0 +1,42 @@
+brand,shade,hex,undertone,type,finish,coverage,price,description,skin_type
+Luminara,Porcelain,#F5DEB3,warm,liquid,dewy,light,28,Lightweight formula for a fresh natural finish,dry combination
+Luminara,Ivory,#FFE4C4,neutral,liquid,satin,medium,32,Buildable coverage with a skin-like finish,all skin types
+Luminara,Sand,#D2B48C,warm,liquid,matte,medium,32,Long-wear formula that controls shine all day,oily combination
+Luminara,Honey,#C4A882,warm,liquid,satin,medium,35,Smoothing formula for a perfected complexion,normal combination
+Luminara,Caramel,#A0785A,neutral,liquid,matte,full,35,Full-coverage formula that blurs imperfections,all skin types
+Luminara,Espresso,#6B4226,warm,liquid,satin,buildable,30,Hydrating formula with a luminous finish,dry normal
+Velvet Beauty,Alabaster,#F5E6D3,cool,liquid,matte,light,40,Ultra-light formula suitable for sensitive skin,sensitive oily
+Velvet Beauty,Buff,#E8D0B3,warm,liquid,dewy,light,42,Glowy formula for a lit-from-within look,dry normal
+Velvet Beauty,Natural Beige,#D4B896,neutral,liquid,satin,medium,42,Skin-matching formula for a seamless blend,all skin types
+Velvet Beauty,Golden Tan,#BFA07A,warm,liquid,matte,full,38,Shine-free formula with 24hr wear,oily combination
+Velvet Beauty,Toffee,#9B7653,warm,liquid,satin,medium,38,Creamy texture that melts into skin naturally,normal combination
+Velvet Beauty,Mahogany,#7B4B2A,neutral,liquid,dewy,buildable,40,Radiance-boosting formula for rich complexions,dry normal
+Glow Studio,Fair Rose,#F0D5C4,cool,liquid,dewy,light,36,Rose-infused formula for rosy complexions,sensitive dry
+Glow Studio,Light Peach,#E8C8A9,warm,liquid,satin,medium,36,Peach-toned base for a warm glow,normal dry
+Glow Studio,Warm Beige,#CDAD8A,warm,liquid,matte,medium,34,Mineral formula that perfects the complexion,oily combination
+Glow Studio,Golden Medium,#B89A73,warm,liquid,dewy,buildable,34,Golden-hour finish for warm complexions,all skin types
+Glow Studio,Amber,#9E7F5A,neutral,liquid,satin,medium,36,Neutral formula for a balanced complexion,combination normal
+Glow Studio,Deep Walnut,#6E4B32,warm,liquid,matte,full,36,Rich coverage for deeper skin tones,oily combination
+Skin Perfect,Fair Neutral,#F2DCC8,neutral,cushion,dewy,light,42,Air-cushion formula for a poreless look,all skin types
+Skin Perfect,Light Warm,#E4C5A5,warm,cushion,satin,medium,42,Warm-toned cushion for a radiant base,normal dry
+Skin Perfect,Medium Cool,#C9A88A,cool,cushion,matte,medium,38,Cooling cushion for a shine-free finish,oily sensitive
+Skin Perfect,Warm Tan,#B59272,warm,cushion,dewy,buildable,38,Glowing cushion foundation for tan complexions,dry normal
+Skin Perfect,Deep Neutral,#8C6B4F,neutral,cushion,satin,full,40,Rich cushion coverage for deeper complexions,all skin types
+Pure Radiance,Pearl,#F3E0CC,cool,powder,matte,light,30,Mineral powder foundation for a flawless finish,oily combination
+Pure Radiance,Bisque,#DDC4A6,neutral,powder,matte,light,30,Buildable mineral coverage for acne-prone skin,oily combination sensitive
+Pure Radiance,Toasted Almond,#C0A07A,warm,powder,matte,medium,28,Warm-toned powder for a natural matte look,oily normal
+Pure Radiance,Mocha,#8A6A50,cool,powder,satin,medium,28,Silky powder that blends seamlessly,combination all
+Pure Radiance,Cocoa,#5C3D28,neutral,powder,matte,full,26,Deep matte powder for rich complexions,oily combination
+Derma Luxe,Fair Beige,#F0D8C0,warm,cream,dewy,medium,45,Creamy base with skincare benefits,dry sensitive
+Derma Luxe,Light Neutral,#DFC0A0,neutral,cream,satin,medium,45,Skin-nourishing formula for a healthy glow,dry normal
+Derma Luxe,Medium Warm,#C09870,warm,cream,dewy,buildable,48,Luxe cream foundation with SPF 15,dry combination
+Derma Luxe,Sienna,#8E6B4E,warm,cream,satin,full,48,Rich coverage cream for warm undertones,normal combination
+Derma Luxe,Ebony,#4A3020,neutral,cream,dewy,full,45,Deep coverage with intense hydration,dry normal
+Urban Glow,Vanilla,#F5E0CA,warm,stick,satin,medium,25,Easy-to-apply stick foundation for on-the-go,all skin types
+Urban Glow,Natural,#DDB896,neutral,stick,matte,medium,25,Portable stick with buildable coverage,combination oily
+Urban Glow,Cinnamon,#A88060,warm,stick,satin,buildable,22,Warm-toned stick for a golden finish,normal dry
+Urban Glow,Chestnut,#7D5840,cool,stick,matte,full,22,Cool-toned stick with long-wear coverage,oily combination
+Aura Cosmetics,Petal White,#F5E2D0,cool,mousse,dewy,light,38,Airy mousse formula for a soft-focus effect,sensitive dry
+Aura Cosmetics,Creamy Beige,#E0C4A8,warm,mousse,satin,medium,38,Whipped mousse for a second-skin finish,normal all
+Aura Cosmetics,Warm Sand,#C8A888,warm,mousse,dewy,buildable,40,Buildable mousse for a warm radiant look,dry combination
+Aura Cosmetics,Hazelnut,#9C7B5D,neutral,mousse,satin,medium,40,Neutral mousse that adapts to skin tone shifts,all skin types

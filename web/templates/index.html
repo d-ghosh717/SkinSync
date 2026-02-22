@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkinSync – AI Skin Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div class="page">
+
+        <header>
+            <div class="logo"><span class="logo-icon">✦</span><span>Skin<b>Sync</b></span></div>
+            <p class="tagline">AI-powered skin analysis &amp; foundation matching</p>
+        </header>
+
+        <main>
+            <!-- ── Left: Input ──────────────────────────────────────────────── -->
+            <section class="card input-card">
+                <div class="tabs">
+                    <button class="tab active" id="tab-btn-upload" onclick="switchTab('upload')">Upload Photo</button>
+                    <button class="tab" id="tab-btn-camera" onclick="switchTab('camera')">Take Selfie</button>
+                </div>
+
+                <!-- ── Upload Tab ────────────────────────────────────────────── -->
+                <div id="tab-upload" class="tab-pane active">
+                    <input type="file" id="file-input" accept="image/*" class="visually-hidden">
+                    <div class="drop-zone" id="drop-zone">
+                        <div class="drop-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                        </div>
+                        <p>Drag &amp; drop or <span class="link">click to browse</span></p>
+                        <p class="small">Supports JPG, PNG, HEIC</p>
+                    </div>
+                    <img id="upload-preview" class="preview-img hidden" alt="Uploaded photo">
+                    <p id="change-hint" class="small center hidden"
+                        style="margin-top:.4rem;cursor:pointer;color:var(--accent)">
+                        Click to change photo
+                    </p>
+                </div>
+
+                <!-- ── Camera Tab ─────────────────────────────────────────────── -->
+                <div id="tab-camera" class="tab-pane hidden">
+
+                    <!-- Stage 1: Placeholder (before camera starts) -->
+                    <div id="cam-placeholder" class="cam-placeholder">
+                        <div class="cam-ph-icon">📷</div>
+                        <p class="cam-ph-title">Take a Selfie</p>
+                        <p class="small muted" style="margin-top:.3rem;">Position your face in good lighting for best
+                            results</p>
+                        <button id="start-cam-btn" class="btn btn-secondary cam-toggle-btn">
+                            Turn On Camera
+                        </button>
+                    </div>
+
+                    <!-- Stage 2: Live camera preview -->
+                    <div id="cam-live" class="hidden">
+                        <div class="cam-wrap">
+                            <video id="webcam" autoplay playsinline muted></video>
+                            <!-- Face guide oval -->
+                            <div class="face-guide"></div>
+                            <!-- Live status pill (top of video) -->
+                            <div id="cam-status" class="cam-status">
+                                <span id="cam-dot" class="cam-dot cam-dot-grey"></span>
+                                <span id="cam-status-text">Starting…</span>
+                            </div>
+                        </div>
+
+                        <!-- Warnings panel under video -->
+                        <div id="cam-warnings" class="cam-warnings hidden"></div>
+
+                        <canvas id="canvas" class="visually-hidden"></canvas>
+
+                        <button id="capture-btn" class="btn btn-primary" style="margin-top:.8rem;" disabled>
+                            📸 Capture &amp; Analyze
+                        </button>
+                        <button id="stop-cam-btn" class="btn btn-secondary" style="margin-top:.5rem;">
+                            ✕ Turn Off Camera
+                        </button>
+                    </div>
+
+                    <!-- Stage 3: Captured image preview -->
+                    <div id="cam-captured" class="hidden">
+                        <img id="cam-preview" class="preview-img" alt="Captured selfie">
+                        <button id="retake-btn" class="btn btn-secondary" style="margin-top:.6rem;">
+                            🔄 Retake Selfie
+                        </button>
+                    </div>
+
+                </div><!-- end camera tab -->
+
+                <!-- Quality warnings from server (after analysis) -->
+                <div id="quality-warns" class="warn-banner hidden"></div>
+
+                <!-- Analyze button (upload tab only) -->
+                <button id="analyze-btn" class="btn btn-primary hidden" disabled>✦ Analyze Skin Profile</button>
+
+                <!-- Spinner overlay -->
+                <div id="loader" class="loader hidden">
+                    <div class="spinner"></div>
+                    <p>Analyzing your skin profile…</p>
+                </div>
+            </section>
+
+            <!-- ── Right: Results ────────────────────────────────────────────── -->
+            <div id="results-col" class="results-col hidden">
+
+                <div class="result-row">
+                    <!-- Detected Skin Color -->
+                    <div class="card detail-card">
+                        <div class="card-hdr"><span class="card-ico">🔥</span>
+                            <h3>Detected Skin Color</h3>
+                        </div>
+                        <div class="color-block-row">
+                            <div id="big-chip" class="big-chip"></div>
+                            <div class="color-text">
+                                <p id="res-hex" class="hex-big">#------</p>
+                                <p id="res-rgb" class="small muted">RGB(–, –, –)</p>
+                                <p id="res-lum" class="small muted">Luminance: –</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Skin Tone -->
+                    <div class="card detail-card">
+                        <div class="card-hdr"><span class="card-ico">☀️</span>
+                            <h3>Skin Tone</h3>
+                        </div>
+                        <div class="badge-row">
+                            <span id="res-tone-badge" class="badge badge-tone">–</span>
+                            <span id="res-tone-type" class="small muted">–</span>
+                        </div>
+                        <p id="res-tone-desc" class="small muted" style="margin-top:.6rem;">–</p>
+                        <div class="tone-bar-wrap">
+                            <div class="tone-bar"></div>
+                            <div id="tone-marker" class="tone-marker"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-row">
+                    <!-- Undertone -->
+                    <div class="card detail-card">
+                        <div class="card-hdr"><span class="card-ico">👁️</span>
+                            <h3>Undertone</h3>
+                        </div>
+                        <div class="badge-row">
+                            <span id="res-ut-badge" class="badge badge-cool">–</span>
+                            <span id="res-ut-conf" class="small muted">–</span>
+                        </div>
+                        <div id="ut-bars" class="ut-bars"></div>
+                    </div>
+                    <!-- Skin Texture -->
+                    <div class="card detail-card">
+                        <div class="card-hdr"><span class="card-ico">🪄</span>
+                            <h3>Skin Texture</h3>
+                        </div>
+                        <div class="badge-row">
+                            <span id="res-tx-badge" class="badge badge-warm">–</span>
+                            <span id="res-tx-conf" class="small muted">–</span>
+                        </div>
+                        <ul id="res-tx-tags" class="bullet-list"></ul>
+                        <div id="finish-box" class="hint-box hidden">
+                            <p id="finish-rec"></p>
+                            <p id="foundation-types"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Foundation Recommendations -->
+                <div class="card">
+                    <div class="card-hdr"><span class="card-ico">🏆</span>
+                        <h3>Foundation Recommendations</h3>
+                    </div>
+                    <div id="found-list"></div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+    <script src="/static/js/main.js"></script>
+</body>
+
+</html>
