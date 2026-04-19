@@ -27,7 +27,7 @@ It offers two modes:
 1. Clone the repository:
 
 ```
-git clone https://github.com/your-username/skinsync.git
+git clone https://github.com/d-ghosh717/SkinSync.git
 cd skinsync
 ```
 
