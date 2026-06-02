@@ -182,6 +182,59 @@
                     <div id="found-list"></div>
                 </div>
 
+                <!-- ── Virtual Try-On ───────────────────────────────────────── -->
+                <div class="card tryon-card" id="tryon-card">
+                    <div class="card-hdr">
+                        <span class="card-ico">💄</span>
+                        <h3>Virtual Try-On</h3>
+                        <div class="tryon-toggle-wrap">
+                            <label class="tryon-switch" for="tryon-toggle">
+                                <input type="checkbox" id="tryon-toggle">
+                                <span class="tryon-slider-track"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <p class="small muted" style="margin-bottom:1rem;">See how the best-match foundation looks on your skin</p>
+
+                    <!-- Before / After comparison -->
+                    <div class="tryon-comparison" id="tryon-comparison">
+                        <div class="tryon-img-wrap">
+                            <div class="tryon-label">Before</div>
+                            <img id="tryon-before" class="tryon-img" alt="Original photo">
+                        </div>
+                        <div class="tryon-arrow">→</div>
+                        <div class="tryon-img-wrap">
+                            <div class="tryon-label tryon-label-after">After</div>
+                            <img id="tryon-after" class="tryon-img" alt="Try-on preview">
+                            <div id="tryon-loading" class="tryon-loading hidden">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alpha slider -->
+                    <div class="tryon-controls" id="tryon-controls">
+                        <div class="tryon-alpha-row">
+                            <span class="tryon-alpha-label">Blend Strength</span>
+                            <span class="tryon-alpha-value" id="tryon-alpha-value">38%</span>
+                        </div>
+                        <input type="range" id="tryon-alpha" class="tryon-range" min="0" max="100" value="38" step="1">
+                        <div class="tryon-range-labels">
+                            <span>Sheer</span>
+                            <span>Full Coverage</span>
+                        </div>
+                    </div>
+
+                    <!-- Tone info chip -->
+                    <div class="tryon-tone-info" id="tryon-tone-info">
+                        <div class="tryon-tone-chip" id="tryon-tone-chip"></div>
+                        <div>
+                            <p class="tryon-tone-name" id="tryon-tone-name">–</p>
+                            <p class="small muted" id="tryon-tone-desc">Foundation shade matched to your skin</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>

@@ -13,6 +13,7 @@ from face_engine.detector  import FaceDetector
 from face_engine.lighting  import LightingNormalizer
 from face_engine.quality   import QualityChecker
 from face_engine.skin_tone import SkinToneAnalyzer
+from face_engine.tryon     import VirtualTryOn
 
 app = Flask(__name__, template_folder="web/templates", static_folder="web/static")
 
@@ -21,6 +22,7 @@ detector      = FaceDetector(max_num_faces=1)
 normalizer    = LightingNormalizer(clip_limit=2.0, tile_grid_size=(8, 8))
 checker       = QualityChecker()
 tone_analyzer = SkinToneAnalyzer(window_size=1)
+tryon         = VirtualTryOn(alpha=0.38)
 
 # ── Foundation Dataset ────────────────────────────────────────────────────────
 def _hex_to_rgb(h: str):
@@ -187,6 +189,49 @@ def analyze_image():
             },
             "recommendations": recs,
         })
+    except Exception as e:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/tryon", methods=["POST"])
+def api_tryon():
+    """Apply virtual foundation try-on to an uploaded image.
+
+    Expects multipart form data:
+      - image: the face photo
+      - tone:  skin tone label (Fair / Medium / Tan / Deep)
+      - alpha: blend strength 0.0-1.0 (optional, default 0.38)
+
+    Returns the processed image as JPEG.
+    """
+    if 'image' not in request.files:
+        return jsonify({"error": "No image provided"}), 400
+    tone  = request.form.get('tone', '')
+    alpha = float(request.form.get('alpha', 0.38))
+
+    try:
+        buf   = np.frombuffer(request.files['image'].read(), np.uint8)
+        frame = cv2.imdecode(buf, cv2.IMREAD_COLOR)
+        if frame is None:
+            return jsonify({"error": "Invalid image"}), 400
+
+        norm    = normalizer.normalize(frame)
+        lm_list = detector.process(norm)
+        if not lm_list:
+            return jsonify({"error": "No face detected."}), 400
+
+        # Apply the virtual try-on
+        tryon.set_alpha(alpha)
+        result_frame = tryon.apply(norm.copy(), lm_list[0], tone)
+
+        # Encode as JPEG and return
+        ok, jpeg = cv2.imencode('.jpg', result_frame, [cv2.IMWRITE_JPEG_QUALITY, 92])
+        if not ok:
+            return jsonify({"error": "Failed to encode result image."}), 500
+
+        from flask import Response
+        return Response(jpeg.tobytes(), mimetype='image/jpeg')
     except Exception as e:
         import traceback; traceback.print_exc()
         return jsonify({"error": str(e)}), 500

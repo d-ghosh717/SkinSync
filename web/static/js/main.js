@@ -379,3 +379,129 @@ function renderFoundations(recs, skinHex) {
 // ── Init ──────────────────────────────────────────────────────────────────────
 // Start on Upload tab: show analyze button
 show(analyzeBtn);
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  VIRTUAL TRY-ON
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Try-On DOM ───────────────────────────────────────────────────────────────
+const tryonToggle    = document.getElementById('tryon-toggle');
+const tryonComparison = document.getElementById('tryon-comparison');
+const tryonControls  = document.getElementById('tryon-controls');
+const tryonToneInfo  = document.getElementById('tryon-tone-info');
+const tryonBefore    = document.getElementById('tryon-before');
+const tryonAfter     = document.getElementById('tryon-after');
+const tryonLoading   = document.getElementById('tryon-loading');
+const tryonAlpha     = document.getElementById('tryon-alpha');
+const tryonAlphaVal  = document.getElementById('tryon-alpha-value');
+const tryonToneChip  = document.getElementById('tryon-tone-chip');
+const tryonToneName  = document.getElementById('tryon-tone-name');
+
+// ── Try-On State ─────────────────────────────────────────────────────────────
+let tryonTone     = '';          // detected tone label (Fair / Medium / Tan / Deep)
+let tryonEnabled  = false;
+let tryonTimer    = null;        // debounce timer for slider
+
+// Foundation BGR colours (same as face_engine/tryon.py but in CSS hex)
+const FOUNDATION_HEX = {
+    Fair:   '#cdc3b4',
+    Medium: '#b4a082',
+    Tan:    '#8c7858',
+    Deep:   '#5a4632',
+};
+
+// ── Toggle ───────────────────────────────────────────────────────────────────
+tryonToggle.addEventListener('change', () => {
+    tryonEnabled = tryonToggle.checked;
+    if (tryonEnabled) {
+        show(tryonComparison);
+        show(tryonControls);
+        show(tryonToneInfo);
+        loadTryOn();
+    } else {
+        hide(tryonComparison);
+        hide(tryonControls);
+        hide(tryonToneInfo);
+    }
+});
+
+// ── Alpha Slider ─────────────────────────────────────────────────────────────
+tryonAlpha.addEventListener('input', () => {
+    tryonAlphaVal.textContent = tryonAlpha.value + '%';
+    // Debounce: wait 300ms after the user stops dragging
+    clearTimeout(tryonTimer);
+    tryonTimer = setTimeout(() => {
+        if (tryonEnabled) loadTryOn();
+    }, 300);
+});
+
+// ── Load Try-On Image ────────────────────────────────────────────────────────
+async function loadTryOn() {
+    if (!imageBlob || !tryonTone) return;
+
+    show(tryonLoading);
+
+    // Set the "before" image
+    if (!tryonBefore.src || tryonBefore.src === '') {
+        tryonBefore.src = URL.createObjectURL(imageBlob);
+    }
+
+    try {
+        const fd = new FormData();
+        fd.append('image', imageBlob, 'photo.jpg');
+        fd.append('tone', tryonTone);
+        fd.append('alpha', (parseInt(tryonAlpha.value) / 100).toFixed(2));
+
+        const resp = await fetch('/api/tryon', { method: 'POST', body: fd });
+        if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            console.error('Try-on error:', err.error || resp.statusText);
+            hide(tryonLoading);
+            return;
+        }
+
+        const blob = await resp.blob();
+        const oldSrc = tryonAfter.src;
+        tryonAfter.src = URL.createObjectURL(blob);
+        // Revoke old object URL to free memory
+        if (oldSrc && oldSrc.startsWith('blob:')) URL.revokeObjectURL(oldSrc);
+    } catch (e) {
+        console.error('Try-on fetch error:', e);
+    } finally {
+        hide(tryonLoading);
+    }
+}
+
+// ── Setup Try-On After Analysis ──────────────────────────────────────────────
+function setupTryOn(tone) {
+    tryonTone = tone;
+
+    // Update tone info chip
+    tryonToneChip.style.background = FOUNDATION_HEX[tone] || '#bbb';
+    tryonToneName.textContent = tone + ' Foundation';
+
+    // Set the "before" preview
+    if (imageBlob) {
+        tryonBefore.src = URL.createObjectURL(imageBlob);
+    }
+
+    // Reset toggle state
+    tryonToggle.checked = false;
+    tryonEnabled = false;
+    hide(tryonComparison);
+    hide(tryonControls);
+    hide(tryonToneInfo);
+
+    // Reset alpha slider
+    tryonAlpha.value = 38;
+    tryonAlphaVal.textContent = '38%';
+}
+
+// ── Patch renderResults to trigger try-on setup ──────────────────────────────
+const _origRenderResults = renderResults;
+renderResults = function(data) {
+    _origRenderResults(data);
+    if (data.profile && data.profile.tone) {
+        setupTryOn(data.profile.tone);
+    }
+};
